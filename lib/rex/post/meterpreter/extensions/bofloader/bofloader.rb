@@ -118,16 +118,13 @@ class BofPack
     return finalize_buffer()
   end
 
-  def coff_pack_pack(entrypoint, coff_file, argument_data)
+  def coff_pack_pack(entrypoint, coff_data, argument_data)
     # Create packed data containing:
     # functionname | coff_data | args_data
     # which can be passed directly to the LoadAndRun() function
-    file = File.open(coff_file, "rb")
-    coff_data = file.read
-    file.close
-
     return bof_pack("zbb", [entrypoint, coff_data, argument_data])
   end
+
 end
 
 class Bofloader < Extension
@@ -154,38 +151,39 @@ class Bofloader < Extension
   end
 
   def exec_cmd(cmd)
+    puts "test3"
     request = Packet.create_request(COMMAND_ID_BOFLOADER_EXEC_CMD)
     
-    # Parse the command line arguments. TODO: use better shlexing to include spaces in file paths
-    args = cmd.split
-    filename = args[0]
+    filename = cmd[0]
+    puts filename.class
 
+    puts "test4"
     if filename.nil?
-      puts "Specify a BOF file to load"
-      return 
-    elsif not File.file?(filename)
-      puts "File #{filename} does not exist!"
-      return 
+      throw "Specify a BOF file to load"
+    elsif not ::File.file?(filename)
+      throw "File #{filename} does not exist!"
     end
     
-    begin
-      file = File.open(filename, "rb")
-      bof_data = file.read
-      file.close
-    rescue
-      puts "Could not open file #{filename} for reading!"
-      return
-    end
+    puts "test5"
+    file = ::File.new(filename, "rb")
+    bof_data = file.read
+    file.close
+    #puts "Could not open file #{filename} for reading!"
+    puts "test6"
     
     # Pack up beacon object file data and arguments into one single binary blob
     # Hardcode the entrypoint to "go" (CobaltStrike approved)
     bof = BofPack.new
-    packed_coff_data = bof.coff_pack_pack("go", bof_data, bof.bof_pack(args[1], args[2..]))
+    packed_args = bof.bof_pack(cmd[1], cmd[2..])
+    puts packed_args
+    packed_coff_data = bof.coff_pack_pack("go", bof_data, packed_args)
 
     # Send the meterpreter TLV packet and get the output back
     request.add_tlv(TLV_TYPE_BOFLOADER_CMD, packed_coff_data)
     response = client.send_request(request)
+    puts "test8"
     output = response.get_tlv_value(TLV_TYPE_BOFLOADER_CMD_RESULT)
+    puts "test9"
   end
 
 end

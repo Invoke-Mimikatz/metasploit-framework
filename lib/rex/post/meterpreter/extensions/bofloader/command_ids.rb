@@ -6,7 +6,7 @@ module Extensions
 module Bofloader
 
 # ID for the extension (needs to be a multiple of 1000)
-EXTENSION_ID_BOFLOADER = 99000
+EXTENSION_ID_BOFLOADER = 18000
 
 # Associated command ids
 COMMAND_ID_BOFLOADER_EXEC_CMD = EXTENSION_ID_BOFLOADER + 1
