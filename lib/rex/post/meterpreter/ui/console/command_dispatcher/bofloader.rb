@@ -37,7 +37,29 @@ class Console::CommandDispatcher::Bofloader
   def initialize(shell)
     super
     print_line
-    print_line(" Lawd dem BOFS -->  <bof file> <fstring> <args>")
+    print_line
+    print_line("                ..:::-::..                ")
+    print_line("            -=**##########*+=:.           ")
+    print_line("         :  :+#################+-         ")
+    print_line("       =*##+:  .=*###############*=       ")
+    print_line("     :*#######+-. .:=*#############*:     ")
+    print_line("    =############*=:. .....:-=*######=    ")
+    print_line("   =########=::+####*          .+#####+   ")
+    print_line("  :########-    *###-             ....:   ")
+    print_line("  +########:    +###+           .++++==-  ")
+    print_line("  *########*.  -#####-         :*#######  ")
+    print_line("  *##########*########+-.   .-+#########  ")
+    print_line("  *#######################*############*  ")
+    print_line("  -#######**##################**#######-  ")
+    print_line("   +#####:  =################+  :#####*   ")
+    print_line("    +####*:  :+############+:  .*####*    ")
+    print_line("     =#####=:   .-=++++=-.   .=#####=     ")
+    print_line("      :+#####*=:.        .:=*#####*:      ")
+    print_line("        :+########**++**########+:        ")
+    print_line("           :=*##############*=-.          ")
+    print_line("              .::-==++==-::.              ")
+    print_line
+    print_line("   @TrustedSec COFFLoader (by @kev169, @GuhnooPlusLinux, @RowdyJoe)")
     print_line
 
   end
@@ -55,7 +77,7 @@ class Console::CommandDispatcher::Bofloader
     print_line("here1")
     output = client.bofloader.exec_cmd(args)
     print_line("here2")
-    print_line(output)
+    #print_line(output) # TODO: print output from bof_cmd
   end
 
 end
