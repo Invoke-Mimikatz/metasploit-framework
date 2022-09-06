@@ -170,21 +170,13 @@ class Bofloader < Extension
     # Hardcode the entrypoint to "go" (CobaltStrike approved)
     bof = BofPack.new
     packed_args = bof.bof_pack(cmd[1], cmd[2..])
-    puts packed_args
     packed_coff_data = bof.coff_pack_pack("go", bof_data, packed_args)
 
     # Send the meterpreter TLV packet and get the output back
     request.add_tlv(TLV_TYPE_BOFLOADER_CMD, packed_coff_data)
-    puts "DEBUG: Sending BOF data: #{packed_coff_data.length} bytes"
     response = client.send_request(request)
-    puts "DEBUG: Response back from session: type: #{response.class}"
     output = response.get_tlv_value(TLV_TYPE_BOFLOADER_CMD_RESULT)
-    puts "DEBUG: Output in packet from session: type: #{output.class}"
-    if output.class == String
-      puts "DEBUG: Output length: #{output.length} bytes"
-      puts "DEBUG: Output below:\n#{output}"
-    end
-    puts "DEBUG: Finished"
+    return output
   end
 
 end
