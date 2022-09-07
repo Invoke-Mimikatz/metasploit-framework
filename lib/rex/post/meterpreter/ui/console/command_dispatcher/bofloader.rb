@@ -49,9 +49,9 @@ class Console::CommandDispatcher::Bofloader
     print_line("  +########:    +###+           .++++==-  ")
     print_line("  *########*.  -#####-         :*#######  ")
     print_line("  *##########*########+-.   .-+#########  ")
-    print_line("  *#######################*############*  ")
-    print_line("  -#######**##################**#######-  ")
-    print_line("   +#####:  =################+  :#####*   ")
+    print_line("  *###########HACK########*############*  ")
+    print_line("  -#######**######THE#########**#######-  ")
+    print_line("   +#####:  =########PLANET!#+  :#####*   ")
     print_line("    +####*:  :+############+:  .*####*    ")
     print_line("     =#####=:   .-=++++=-.   .=#####=     ")
     print_line("      :+#####*=:.        .:=*#####*:      ")
@@ -64,31 +64,40 @@ class Console::CommandDispatcher::Bofloader
 
   end
 
-  @@bof_cmd_usage_opts = Arguments.new(
-     ['-b', '--bof-file']      => [ true, "Beacon Object File" ],
-     ['-a', '--arguments']     => [ false, "List of command-line arguments to pass to the BOF" ],
+  @@bof_cmd_usage_opts = Rex::Parser::Arguments.new(
+     ['-h', '--help']          => [ false, "Help Banner" ],
+     ['-b', '--bof-file']      => [ true,  "Local path to Beacon Object File" ],
      ['-f', '--format-string'] => [ false, "bof_pack compatible format-string. Choose combination of: b, i, s, z, Z" ],
+     ['-a', '--arguments']     => [ false, "List of command-line arguments to pass to the BOF" ],
   )
+
+  # TODO: Properly parse arguments (positional and named switches)
 
   #
   # List of supported commands.
   #
   def commands
     {
-      'bof_cmd'              => 'Execute an arbitary BOF file',
+      'bof_cmd'                => 'Execute an arbitary BOF file',
     }
   end
 
+  def cmd_bof_cmd_help
+    print_line('Usage:   bof_exec </path/to/bof_file.o> [fstring] [bof_arguments ...]')
+    print_line("Example: bof_exec /root/dir.x64.o Zs C:\\ 0")
+    print_line(@@bof_cmd_usage_opts.usage)
+  end
+
+  # Tab complete the first argument as a file on the local filesystem
+  # TODO: Fix so it only tab completes the `-b` bof_file argument (or based on position: 1st positional parameter)
   def cmd_bof_cmd_tabs(str, words)
     tab_complete_filenames(str, words)
   end
 
-  def bof_cmd_tabs(*args)
-  end
   def cmd_bof_cmd(*args)
     output = client.bofloader.exec_cmd(args)
     if output.nil?
-      print_line("Nil output from BOF...")
+      print_line("No (Nil?) output from BOF...")
     else
       print_line(output)
     end
