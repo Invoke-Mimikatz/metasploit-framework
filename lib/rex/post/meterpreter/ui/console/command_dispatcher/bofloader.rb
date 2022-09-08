@@ -67,6 +67,7 @@ class Console::CommandDispatcher::Bofloader
   @@bof_cmd_usage_opts = Rex::Parser::Arguments.new(
      ['-h', '--help']          => [ false, "Help Banner" ],
      ['-b', '--bof-file']      => [ true,  "Local path to Beacon Object File" ],
+     ['-j', '--json-file']  =>    [ true,  "Local path to JSON arguments file" ],
      ['-f', '--format-string'] => [ false, "bof_pack compatible format-string. Choose combination of: b, i, s, z, Z" ],
      ['-a', '--arguments']     => [ false, "List of command-line arguments to pass to the BOF" ],
   )
@@ -83,13 +84,12 @@ class Console::CommandDispatcher::Bofloader
   end
 
   def cmd_bof_cmd_help
-    print_line('Usage:   bof_exec </path/to/bof_file.o> [fstring] [bof_arguments ...]')
-    print_line("Example: bof_exec /root/dir.x64.o Zs C:\\ 0")
+    print_line('Usage:   bof_cmd </path/to/bof_file.o> [fstring] [bof_arguments ...]')
+    print_line("Example: bof_cmd /root/dir.x64.o Zs C:\\ 0")
     print_line(@@bof_cmd_usage_opts.usage)
   end
 
-  # Tab complete the first argument as a file on the local filesystem
-  # TODO: Fix so it only tab completes the `-b` bof_file argument (or based on position: 1st positional parameter)
+  # Tab complete the first argument as a file on the local filesystem and the second argument as a format-string.
   def cmd_bof_cmd_tabs(str, words)
     if words.length == 1 or words[-1] == '-b' or words[-1] == '--bof-file'
       tab_complete_filenames(str, words)
