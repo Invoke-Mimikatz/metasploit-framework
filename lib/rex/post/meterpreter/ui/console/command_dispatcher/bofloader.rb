@@ -108,7 +108,19 @@ class Console::CommandDispatcher::Bofloader
       return
     end
 
-    output = client.bofloader.exec_cmd(filename, args_format: bof_args_format, args: bof_args, entry: entry)
+    bof_data = ::File.binread(filename)
+    parsed = Metasm::COFF.decode(bof_data)
+    bof_arch = { # map of metasm to metasploit architectures
+      'AMD64' => ARCH_X64,
+      'I386'  => ARCH_X86
+    }.fetch(parsed.header.machine, nil)
+
+    unless bof_arch == client.arch
+      print_error("The file architecture is incompatible with the current session (file: #{bof_arch} session: #{client.arch})")
+      return
+    end
+
+    output = client.bofloader.execute(bof_data, args_format: bof_args_format, args: bof_args, entry: entry)
     if output.nil?
       print_line("No (Nil?) output from BOF...")
     else
