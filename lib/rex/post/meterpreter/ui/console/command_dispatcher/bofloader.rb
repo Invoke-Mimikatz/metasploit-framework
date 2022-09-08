@@ -109,12 +109,16 @@ class Console::CommandDispatcher::Bofloader
     end
 
     bof_data = ::File.binread(filename)
-    parsed = Metasm::COFF.decode(bof_data)
+    parsed = Metasm::COFF.decode_header(bof_data[0...20])
     bof_arch = { # map of metasm to metasploit architectures
       'AMD64' => ARCH_X64,
       'I386'  => ARCH_X86
     }.fetch(parsed.header.machine, nil)
 
+    unless bof_arch
+      print_error('Unable to determine the file architecture.')
+      return
+    end
     unless bof_arch == client.arch
       print_error("The file architecture is incompatible with the current session (file: #{bof_arch} session: #{client.arch})")
       return
