@@ -91,7 +91,7 @@ class Console::CommandDispatcher::Bofloader
   # Tab complete the first argument as a file on the local filesystem
   # TODO: Fix so it only tab completes the `-b` bof_file argument (or based on position: 1st positional parameter)
   def cmd_bof_cmd_tabs(str, words)
-    if words.length == 1
+    if words.length == 1 or words[-1] == '-b' or words[-1] == '--bof-file'
       tab_complete_filenames(str, words)
     end
   end
