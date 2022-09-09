@@ -51,7 +51,7 @@ class Console::CommandDispatcher::Bofloader
 
   # Tab complete the first argument as a file on the local filesystem
   def cmd_execute_bof_tabs(str, words)
-    return tab_complete_file(str, words) if words.length == 1
+    return tab_complete_filenames(str, words) if words.length == 1
     fmt = {
       '-a'              => [ true ],
       '--arguments'     => [ true ],
@@ -71,13 +71,11 @@ class Console::CommandDispatcher::Bofloader
 
     bof_args = nil
     bof_args_format = nil
-    bof_filename = nil
+    bof_filename = args[0]
     bof_json_filename = nil
     entry = DEFAULT_ENTRY
 
     @@bof_cmd_opts.parse(args) { |opt, idx, val|
-      vals = val.split 
-      bof_args = vals[1..idx]
       case opt
       when '-f', '--format-string'
         bof_args_format = val
@@ -88,21 +86,15 @@ class Console::CommandDispatcher::Bofloader
       end
     }
 
-    unless bof_filename
-      print_error("The -b / --bof-file argument is required")
-      return
-    end
-
     unless ::File.file?(bof_filename) && ::File.readable?(bof_filename)
       print_error("Unreadable file: #{bof_filename}")
       return
     end
 
-    if !!format_string
-      print_status('No argument format specified executing bof with no arguments.')
-      return
+    if bof_args_format
+      bof_args = args[1..bof_args_format.length]
     else
-      bof_args = args[1..format_string.length]
+      print_status('No argument format specified executing bof with no arguments.')
     end
 
     bof_data = ::File.binread(bof_filename)
