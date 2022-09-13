@@ -64,7 +64,8 @@ module Rex
 
           def cmd_execute_bof_help
             print_line('Usage:   execute_bof </path/to/bof_file.o> [arguments [arguments]] --format-string [format-string]')
-            print_line('Example: execute_bof /root/dir.x64.o C:\\\\ 0 --format-string Zs')
+            print_line('Example: execute_bof /bofs/dir.x64.o C:\\\\ 0 --format-string Zs')
+            print_line('Example: execute_bof /bofs/dir.x64.c C:\\\\ 0 --format-string Zs --compile')
             print_line(@@execute_bof_opts.usage)
           end
 
